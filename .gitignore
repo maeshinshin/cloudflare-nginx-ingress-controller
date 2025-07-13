@@ -28,3 +28,9 @@ go.work
 
 # Direnv
 .direnv
+
+# env
+.env
+
+# Tiltfile
+Tiltfile
