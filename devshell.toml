@@ -1,0 +1,31 @@
+[[commands]]
+package = "ctlptl"
+
+[[commands]]
+package = "go"
+
+[[commands]]
+package = "gotest"
+
+[[commands]]
+package = "ko"
+
+[[commands]]
+name = "make"
+package = "gnumake"
+
+[[commands]]
+package = "tilt"
+
+[[commands]]
+package = "kind"
+
+[[commands]]
+package = "kubectl"
+
+[[commands]]
+package = "kubebuilder"
+
+[[commands]]
+name = "helm"
+package = "kubernetes-helm"
