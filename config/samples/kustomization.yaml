@@ -1,4 +1,3 @@
 ## Append samples of your project ##
 resources:
 - networking_v1_ingress.yaml
-# +kubebuilder:scaffold:manifestskustomizesamples
