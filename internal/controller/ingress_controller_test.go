@@ -27,7 +27,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	networkingv1 "github.com/maeshinshin/cloudflare-nginx-ingress-controller/api/v1"
+	networkingv1 "github.com/maeshinshin/integrated-ingress-controller/api/v1"
 )
 
 var _ = Describe("Ingress Controller", func() {

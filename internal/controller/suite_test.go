@@ -32,7 +32,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	networkingv1 "github.com/maeshinshin/cloudflare-nginx-ingress-controller/api/v1"
+	networkingv1 "github.com/maeshinshin/integrated-ingress-controller/api/v1"
 	// +kubebuilder:scaffold:imports
 )
 

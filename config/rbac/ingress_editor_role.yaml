@@ -1,4 +1,4 @@
-# This rule is not used by the project cloudflare-nginx-ingress-controller itself.
+# This rule is not used by the project integrated-ingress-controller itself.
 # It is provided to allow the cluster admin to help manage permissions for users.
 #
 # Grants permissions to create, update, and delete resources within the networking.my.domain.
@@ -9,7 +9,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
-    app.kubernetes.io/name: cloudflare-nginx-ingress-controller
+    app.kubernetes.io/name: integrated-ingress-controller
     app.kubernetes.io/managed-by: kustomize
   name: ingress-editor-role
 rules:

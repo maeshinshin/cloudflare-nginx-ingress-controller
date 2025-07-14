@@ -1,0 +1,32 @@
+apiVersion: v2
+name: integrated-ingress
+description: A Helm chart for deploying an integrated ingress controller with Cloudflare Tunnel and NGINX Ingress Controller.
+# A chart can be either an 'application' or a 'library' chart.
+#
+# Application charts are a collection of templates that can be packaged into versioned archives
+# to be deployed.
+#
+# Library charts provide useful utilities or functions for the chart developer. They're included as
+# a dependency of application charts to inject those utilities and functions into the rendering
+# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+type: application
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 0.0.0
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application. Versions are not expected to
+# follow Semantic Versioning. They should reflect the version the application is using.
+# It is recommended to use it with quotes.
+appVersion: "v0.0.0"
+
+dependencies:
+- name: cloudflare-tunnel-ingress-controller
+  repository: https://helm.strrl.dev
+  version: 0.0.18
+  alias: cloudflare-tunnel-ingress
+- name: ingress-nginx
+  repository: https://kubernetes.github.io/ingress-nginx
+  version: 4.13.0
+digest: sha256:1c783db425c42491d7f4f8d774084ec72a067a4e7b13a1ac9b60ec5dd8c9ab34
+generated: "2025-07-15T00:01:41.95047278+09:00"

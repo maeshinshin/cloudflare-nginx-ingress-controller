@@ -5,8 +5,8 @@
 domain: my.domain
 layout:
 - go.kubebuilder.io/v4
-projectName: cloudflare-nginx-ingress-controller
-repo: github.com/maeshinshin/cloudflare-nginx-ingress-controller
+projectName: integrated-ingress-controller
+repo: github.com/maeshinshin/integrated-ingress-controller
 resources:
 - api:
     crdVersion: v1
@@ -15,6 +15,6 @@ resources:
   domain: my.domain
   group: networking
   kind: Ingress
-  path: github.com/maeshinshin/cloudflare-nginx-ingress-controller/api/v1
+  path: github.com/maeshinshin/integrated-ingress-controller/api/v1
   version: v1
 version: "3"

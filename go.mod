@@ -1,4 +1,4 @@
-module github.com/maeshinshin/cloudflare-nginx-ingress-controller
+module github.com/maeshinshin/integrated-ingress-controller
 
 go 1.23.0
 

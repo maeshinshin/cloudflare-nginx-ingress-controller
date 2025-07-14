@@ -18,7 +18,7 @@ def init():
 	    return 'helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx --namespace nginx-ingress --create-namespace'
 
     def install_cloudflare_tunnel_ingress():
-	    return 'helm upgrade --install --wait -n cloudflare-tunnel-ingress-controller --create-namespace cloudflare-tunnel-ingress-controller strrl.dev/cloudflare-tunnel-ingress-controller --set=cloudflare.apiToken="${CLOUDFLARE_API_TOKEN}",cloudflare.accountId="${CLOUDFLARE_ACCOUNT_ID}",cloudflare.tunnelName="test-tunnel"'
+	    return 'helm upgrade --install --wait -n cloudflare-tunnel-ingress-controller --create-namespace cloudflare-tunnel-ingress-controller strrl.dev/cloudflare-tunnel-ingress-controller --set=cloudflare.apiToken="",cloudflare.accountId="",cloudflare.tunnelName=""
 
     local_resource('install-nginx-ingress',install_nginx_ingress())
     local_resource('install-cloudflare-tunnel-ingress',install_cloudflare_tunnel_ingress())

@@ -34,7 +34,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/metrics/filters"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
-	"github.com/maeshinshin/cloudflare-nginx-ingress-controller/internal/controller"
+	"github.com/maeshinshin/integrated-ingress-controller/internal/controller"
 )
 
 var (
