@@ -20,16 +20,20 @@ import (
 	"context"
 
 	networkingv1 "k8s.io/api/networking/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 // IngressReconciler reconciles a Ingress object
 type IngressReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme                           *runtime.Scheme
+	nginxIngressClassName            string
+	nginxIngressServiceName          string
+	cloudflareTunnelIngressClassName string
 }
 
 // +kubebuilder:rbac:groups=networking.k8s.io,resources=ingresses,verbs=get;list;watch;create;update;patch;delete
@@ -46,9 +50,37 @@ type IngressReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.20.2/pkg/reconcile
 func (r *IngressReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := logf.FromContext(ctx)
+	logger.Info("Reconciling Integrated Ingress", "name", req.Name, "namespace", req.Namespace)
 
-	// TODO(user): your logic here
+	var ing networkingv1.Ingress
+	if err := r.Get(ctx, req.NamespacedName, &ing); err != nil {
+		if apierrors.IsNotFound(err) {
+			logger.Info("Ingress resource not found, skipping reconciliation", "name", req.Name, "namespace", req.Namespace)
+			return ctrl.Result{}, nil
+		} else {
+			logger.Error(err, "Failed to get Ingress resource", "name", req.Name, "namespace", req.Namespace)
+			return ctrl.Result{}, err
+		}
+	}
+
+	if !ing.DeletionTimestamp.IsZero() {
+		logger.Info("Ingress resource is being deleted, skipping reconciliation", "name", req.Name, "namespace", req.Namespace)
+		if err := r.deleteFinalizers(ctx, &ing); err != nil {
+			logger.Error(err, "Failed to delete finalizers from Ingress", "name", req.Name, "namespace", req.Namespace)
+			return ctrl.Result{}, err
+		}
+	}
+
+	return r.reconcile(ctx, ing)
+}
+
+func (r *IngressReconciler) reconcile(ctx context.Context, ing networkingv1.Ingress) (ctrl.Result, error) {
+	logger := logf.FromContext(ctx)
+	if err := r.reconcileIngress(ctx, ing); err != nil {
+		logger.Error(err, "Failed to reconcile Ingress", "name", ing.Name, "namespace", ing.Namespace)
+		return ctrl.Result{}, err
+	}
 
 	return ctrl.Result{}, nil
 }
