@@ -4,21 +4,21 @@ ingressClass:
   name: integrated-ingress
   isDefaultClass: false
   controllerValue: maeshinshin.github.io/integrated-ingress
-
+  
 controllerManager:
   manager:
     args:
-    - --metrics-bind-address=:8443
-    - --leader-elect
-    - --health-probe-bind-address=:8081
+      - --metrics-bind-address=:8443
+      - --leader-elect
+      - --health-probe-bind-address=:8081
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
         drop:
-        - ALL
+          - ALL
     image:
       repository: ghcr.io/maeshinshin/integrated-ingress-controller
-      tag: latest
+      tag: v0.0.1
     resources:
       limits:
         cpu: 500m
@@ -30,15 +30,13 @@ controllerManager:
   serviceAccount:
     annotations: {}
 kubernetesClusterDomain: cluster.local
-
-
 # NGINX Ingress Controller Values
 nginxIngress:
   enabled: true
   ## nginx configuration
   ## Ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/index.md
   ##
-  
+
   global:
     image:
       # -- Registry host to pull images from.
@@ -47,7 +45,7 @@ nginxIngress:
   # See templates/_helpers.tpl
   # nameOverride:
   # fullnameOverride:
-  
+
   # -- Override the deployment namespace; defaults to .Release.Namespace
   namespaceOverride: ""
   ## Labels to apply to all resources
@@ -55,7 +53,7 @@ nginxIngress:
   commonLabels: {}
   # scmhash: abc123
   # myLabel: aakkmd
-  
+
   controller:
     name: controller
     enableAnnotationValidations: true
@@ -197,7 +195,7 @@ nginxIngress:
     # -- Labels to add to the pod container metadata
     podLabels: {}
     #  key: value
-  
+
     # -- Security context for controller pods
     podSecurityContext: {}
     # -- sysctls for controller pods
@@ -249,7 +247,7 @@ nginxIngress:
     ##   time-buckets: "0.005,0.01,0.025,0.05,0.1,0.25,0.5,1,2.5,5,10"
     ##   length-buckets: "10,20,30,40,50,60,70,80,90,100"
     ##   size-buckets: "10,100,1000,10000,100000,1e+06,1e+07"
-  
+
     # -- Additional environment variables to set
     extraEnvs: []
     # extraEnvs:
@@ -258,27 +256,27 @@ nginxIngress:
     #       secretKeyRef:
     #         key: FOO
     #         name: secret-resource
-  
+
     # -- Use a `DaemonSet` or `Deployment`
     kind: Deployment
     # -- Annotations to be added to the controller Deployment or DaemonSet
     ##
     annotations: {}
     #  keel.sh/pollSchedule: "@every 60m"
-  
+
     # -- Labels to be added to the controller Deployment or DaemonSet and other resources that do not have option to specify labels
     ##
     labels: {}
     #  keel.sh/policy: patch
     #  keel.sh/trigger: poll
-  
+
     # -- The update strategy to apply to the Deployment or DaemonSet
     ##
     updateStrategy: {}
     #  rollingUpdate:
     #    maxUnavailable: 1
     #  type: RollingUpdate
-  
+
     # -- Specifies the number of seconds you want to wait for the controller deployment to progress before the system reports back that it has failed.
     # Ref.: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds
     progressDeadlineSeconds: 0
@@ -293,7 +291,7 @@ nginxIngress:
     #    operator: "Equal|Exists"
     #    value: "value"
     #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
-  
+
     # -- Affinity and anti-affinity rules for server scheduling to nodes
     ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
     ##
@@ -318,7 +316,7 @@ nginxIngress:
     #           values:
     #           - controller
     #       topologyKey: kubernetes.io/hostname
-  
+
     # # An example of required pod anti-affinity
     # podAntiAffinity:
     #   requiredDuringSchedulingIgnoredDuringExecution:
@@ -337,7 +335,7 @@ nginxIngress:
     #         values:
     #         - controller
     #     topologyKey: kubernetes.io/hostname
-  
+
     # -- Topology spread constraints rely on node labels to identify the topology domain(s) that each Node is in.
     ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
     ##
@@ -362,7 +360,7 @@ nginxIngress:
     #   topologyKey: kubernetes.io/hostname
     #   maxSkew: 1
     #   whenUnsatisfiable: ScheduleAnyway
-  
+
     # -- `terminationGracePeriodSeconds` to avoid killing pods before we are ready
     ## wait up to five minutes for the drain of connections
     ##
@@ -469,7 +467,7 @@ nginxIngress:
     #     target:
     #       type: AverageValue
     #       averageValue: 10000m
-  
+
     # Mutually exclusive with hpa autoscaling
     keda:
       apiVersion: "keda.sh/v1alpha1"
@@ -497,7 +495,7 @@ nginxIngress:
       #     metricName: http_requests_total
       #     threshold: '100'
       #     query: sum(rate(http_requests_total{deployment="my-deployment"}[2m]))
-  
+
       behavior: {}
       # scaleDown:
       #   stabilizationWindowSeconds: 300
@@ -556,7 +554,7 @@ nginxIngress:
       # -- Enable node port allocation for the external controller service or not. Applies to type `LoadBalancer` only.
       # Ref: https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-nodeport-allocation
       # allocateLoadBalancerNodePorts: true
-  
+
       # -- External traffic policy of the external controller service. Set to "Local" to preserve source IP on providers supporting it.
       # Ref: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
       externalTrafficPolicy: ""
@@ -567,7 +565,7 @@ nginxIngress:
       # If not specified, the service controller allocates a port from your cluster's node port range.
       # Ref: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
       # healthCheckNodePort: 0
-  
+
       # -- Traffic distribution policy of the external controller service. Set to "PreferClose" to route traffic to endpoints that are topologically closer to the client.
       # Ref: https://kubernetes.io/docs/concepts/services-networking/service/#traffic-distribution
       trafficDistribution: ""
@@ -645,7 +643,7 @@ nginxIngress:
         # -- Enable node port allocation for the internal controller service or not. Applies to type `LoadBalancer` only.
         # Ref: https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-nodeport-allocation
         # allocateLoadBalancerNodePorts: true
-  
+
         # -- External traffic policy of the internal controller service. Set to "Local" to preserve source IP on providers supporting it.
         # Ref: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
         externalTrafficPolicy: ""
@@ -656,7 +654,7 @@ nginxIngress:
         # If not specified, the service controller allocates a port from your cluster's node port range.
         # Ref: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
         # healthCheckNodePort: 0
-  
+
         # -- Traffic distribution policy of the internal controller service. Set to "PreferClose" to route traffic to endpoints that are topologically closer to the client.
         # Ref: https://kubernetes.io/docs/concepts/services-networking/service/#traffic-distribution
         trafficDistribution: ""
@@ -675,7 +673,7 @@ nginxIngress:
         # -- Port the internal HTTPS listener is published with.
         # Defaults to the value of `controller.service.ports.https`.
         # https: 443
-  
+
         targetPorts: {}
         # -- Port of the ingress controller the internal HTTP listener is mapped to.
         # Defaults to the value of `controller.service.targetPorts.http`.
@@ -683,7 +681,7 @@ nginxIngress:
         # -- Port of the ingress controller the internal HTTPS listener is mapped to.
         # Defaults to the value of `controller.service.targetPorts.https`.
         # https: https
-  
+
         # -- Declare the app protocol of the internal HTTP and HTTPS listeners or not. Supersedes provider-specific annotations for declaring the backend protocol.
         # Ref: https://kubernetes.io/docs/concepts/services-networking/service/#application-protocol
         appProtocol: true
@@ -728,23 +726,23 @@ nginxIngress:
     #    volumeMounts:
     #    - name: copy-portal-skins
     #      mountPath: /srv/var/lib/lemonldap-ng/portal/skins
-  
+
     # -- Additional volumeMounts to the controller main container.
     extraVolumeMounts: []
     #  - name: copy-portal-skins
     #   mountPath: /var/lib/lemonldap-ng/portal/skins
-  
+
     # -- Additional volumes to the controller pod.
     extraVolumes: []
     #  - name: copy-portal-skins
     #    emptyDir: {}
-  
+
     # -- Containers, which are run before the app containers are started.
     extraInitContainers: []
     # - name: init-myservice
     #   image: busybox
     #   command: ['sh', '-c', 'until nslookup myservice; do echo waiting for myservice; sleep 2; done;']
-  
+
     # -- Modules, which are mounted into the core nginx image.
     extraModules: []
     # - name: mytestmodule
@@ -773,12 +771,12 @@ nginxIngress:
     # The image must contain a `/usr/local/bin/init_module.sh` executable, which
     # will be executed as initContainers, to move its config files within the
     # mounted volume.
-  
+
     admissionWebhooks:
       name: admission
       annotations: {}
       # ignore-check.kube-linter.io/no-read-only-rootfs: "This deployment needs write access to root filesystem".
-  
+
       ## Additional annotations to the admission webhooks.
       ## These annotations will be added to the ValidatingWebhookConfiguration and
       ## the Jobs Spec of the admission webhooks.
@@ -922,7 +920,7 @@ nginxIngress:
         # -- Labels to be added to the metrics service resource
         labels: {}
         # clusterIP: ""
-  
+
         # -- List of IP addresses at which the stats-exporter service is available
         ## Ref: https://kubernetes.io/docs/concepts/services-networking/service/#external-ips
         ##
@@ -1073,7 +1071,7 @@ nginxIngress:
     #  rollingUpdate:
     #    maxUnavailable: 1
     #  type: RollingUpdate
-  
+
     # -- `minReadySeconds` to avoid killing pods before we are ready
     ##
     minReadySeconds: 0
@@ -1085,7 +1083,7 @@ nginxIngress:
     #    operator: "Equal|Exists"
     #    value: "value"
     #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
-  
+
     # -- Affinity and anti-affinity rules for server scheduling to nodes
     ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
     affinity: {}
@@ -1109,7 +1107,7 @@ nginxIngress:
     #           values:
     #           - default-backend
     #       topologyKey: kubernetes.io/hostname
-  
+
     # # An example of required pod anti-affinity
     # podAntiAffinity:
     #   requiredDuringSchedulingIgnoredDuringExecution:
@@ -1128,7 +1126,7 @@ nginxIngress:
     #         values:
     #         - default-backend
     #     topologyKey: kubernetes.io/hostname
-  
+
     # -- Topology spread constraints rely on node labels to identify the topology domain(s) that each Node is in.
     # Ref.: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
     topologySpreadConstraints: []
@@ -1159,7 +1157,7 @@ nginxIngress:
     # -- Labels to add to the pod container metadata
     podLabels: {}
     #  key: value
-  
+
     # -- Node labels for default backend pod assignment
     ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
     ##
@@ -1184,17 +1182,17 @@ nginxIngress:
     # requests:
     #   cpu: 10m
     #   memory: 20Mi
-  
+
     extraVolumeMounts: []
     ## Additional volumeMounts to the default backend container.
     #  - name: copy-portal-skins
     #   mountPath: /var/lib/lemonldap-ng/portal/skins
-  
+
     extraVolumes: []
     ## Additional volumes to the default backend pod.
     #  - name: copy-portal-skins
     #    emptyDir: {}
-  
+
     extraConfigMaps: []
     ## Additional configmaps to the default backend pod.
     #  - name: my-extra-configmap-1
@@ -1209,7 +1207,7 @@ nginxIngress:
     #    data:
     #      extra_file_2.html: |
     #        <!-- Extra HTML content for ConfigMap 2 -->
-  
+
     autoscaling:
       annotations: {}
       enabled: false
@@ -1255,19 +1253,19 @@ nginxIngress:
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   imagePullSecrets: []
   # - name: secretName
-  
+
   # -- TCP service key-value pairs
   ## Ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/exposing-tcp-udp-services.md
   ##
   tcp: {}
   #  "8080": "default/example-tcp-svc:9000"
-  
+
   # -- UDP service key-value pairs
   ## Ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/exposing-tcp-udp-services.md
   ##
   udp: {}
   #  "53": "kube-system/kube-dns:53"
-  
+
   # -- Prefix for TCP and UDP ports names in ingress controller service
   ## Some cloud providers, like Yandex Cloud may have a requirements for a port name regex to support cloud load balancer integration
   portNamePrefix: ""
@@ -1275,7 +1273,6 @@ nginxIngress:
   # This can be generated with: `openssl dhparam 4096 2> /dev/null | base64`
   ## Ref: https://github.com/kubernetes/ingress-nginx/tree/main/docs/examples/customization/ssl-dh-param
   dhParam: ""
-
 # Cloudflare Tunnel Ingress Controller Values
 cloudflareTunnel:
   enabled: true
@@ -1283,31 +1280,25 @@ cloudflareTunnel:
     accountId: ""
     tunnelName: ""
     apiToken: ""
-  
     # Uncomment if you would like to use an existing secret instead of the creating a new one.
     # secretRef:
     #   name: cloudflare-external-secret
     #   accountIDKey: account_id
     #   tunnelNameKey: tunnel_name
     #   apiTokenKey: api_token
-  
   ingressClass:
     name: cloudflare-tunnel
     controllerValue: strrl.dev/cloudflare-tunnel-ingress-controller
     isDefaultClass: false
-  
   replicaCount: 1
-  
   image:
     repository: cr.strrl.dev/strrl/cloudflare-tunnel-ingress-controller
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
-  
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
-  
   serviceAccount:
     # Specifies whether a service account should be created
     create: true
@@ -1316,22 +1307,18 @@ cloudflareTunnel:
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: ""
-  
   podAnnotations: {}
-  
-  podSecurityContext:
-    {}
-    # fsGroup: 2000
-  
-  securityContext:
-    {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
-    # runAsUser: 1000
-  
+  podSecurityContext: {}
+  # fsGroup: 2000
+
+  securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
   resources:
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -1343,13 +1330,9 @@ cloudflareTunnel:
     requests:
       cpu: 100m
       memory: 128Mi
-  
   nodeSelector: {}
-  
   tolerations: []
-  
   affinity: {}
-  
   cloudflared:
     image:
       repository: cloudflare/cloudflared
@@ -1360,7 +1343,6 @@ cloudflareTunnel:
     # Extra arguments to pass to cloudflared command
     # Example: ["--post-quantum", "--edge-ip-version", "4"]
     extraArgs: []
-  
   cloudflaredServiceMonitor:
     create: false
     jobLabel: ""
@@ -1371,4 +1353,3 @@ cloudflareTunnel:
     relabelings: []
     labels: {}
     scheme: http
-  
