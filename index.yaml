@@ -2,6 +2,25 @@ apiVersion: v1
 entries:
   integrated-ingress:
   - apiVersion: v2
+    appVersion: v0.2.1
+    created: "2025-07-16T10:35:33.671781896Z"
+    dependencies:
+    - alias: cloudflare-tunnel-ingress
+      name: cloudflare-tunnel-ingress-controller
+      repository: https://helm.strrl.dev
+      version: 0.0.18
+    - name: ingress-nginx
+      repository: https://kubernetes.github.io/ingress-nginx
+      version: 4.13.0
+    description: A Helm chart for deploying an integrated ingress controller with
+      Cloudflare Tunnel and NGINX Ingress Controller.
+    digest: f0df639e17a46e7d36c24ee023f504c2d45d46bee29c61c2e35dd61c1882e14d
+    name: integrated-ingress
+    type: application
+    urls:
+    - https://github.com/maeshinshin/integrated-ingress-controller/releases/download/integrated-ingress-0.2.1/integrated-ingress-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v2
     appVersion: v0.1.2
     created: "2025-07-16T10:20:24.352014532Z"
     dependencies:
@@ -58,4 +77,4 @@ entries:
     urls:
     - https://github.com/maeshinshin/integrated-ingress-controller/releases/download/integrated-ingress-0.0.1/integrated-ingress-0.0.1.tgz
     version: 0.0.1
-generated: "2025-07-16T10:20:24.35202947Z"
+generated: "2025-07-16T10:35:33.671802235Z"
