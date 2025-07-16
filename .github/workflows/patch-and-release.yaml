@@ -33,6 +33,7 @@ jobs:
 
           yq e '.version = "'$CHART_VERSION'"' -i 'charts/integrated-ingress-controller/Chart.yaml'
           yq e '.appVersion = "'$IMAGE_TAG'"' -i 'charts/integrated-ingress-controller/Chart.yaml'
+          yq e '.controllerManager.manager.image.tag = "'$IMAGE_TAG'"' -i 'charts/integrated-ingress-controller/values.yaml'
 
 
       - name: Configure Git
@@ -116,6 +117,14 @@ jobs:
       - name: Checkout Latest tag
         run: |
           git checkout $(git describe --tags --abbrev=0)
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4.3.0
+
+      - name: add repos
+        run: |
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo add strrl.dev https://helm.strrl.dev
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
