@@ -2,8 +2,8 @@
 
 ingressClass:
   name: integrated-ingress
+  isDefaultClass: false
   controllerValue: maeshinshin.github.io/integrated-ingress
-  isDefaultClass: true
 
 controllerManager:
   manager:
@@ -33,7 +33,7 @@ kubernetesClusterDomain: cluster.local
 
 
 # NGINX Ingress Controller Values
-nginx-ingress:
+nginxIngress:
   enabled: true
   ## nginx configuration
   ## Ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/index.md
@@ -1277,7 +1277,7 @@ nginx-ingress:
   dhParam: ""
 
 # Cloudflare Tunnel Ingress Controller Values
-cloudflare-tunnel-ingress:
+cloudflareTunnel:
   enabled: true
   cloudflare:
     accountId: ""

@@ -59,7 +59,7 @@ func (r *IngressReconciler) reconcileNginxIngress(ctx context.Context, ing netwo
 	}
 
 	nginxIngressSpec := networkingv1apply.IngressSpec().
-		WithIngressClassName(r.nginxIngressClassName)
+		WithIngressClassName(r.NginxIngressClassName)
 
 	if ing.Spec.DefaultBackend != nil {
 		defaultBackend := networkingv1apply.IngressBackend()
@@ -202,7 +202,7 @@ func (r *IngressReconciler) reconcileCloudflareTunnelIngress(ctx context.Context
 	}
 
 	cloudflareTunnelIngressSpec := networkingv1apply.IngressSpec().
-		WithIngressClassName(r.cloudflareTunnelIngressClassName)
+		WithIngressClassName(r.CloudflareTunnelIngressClassName)
 
 	tlsHosts := make(map[string]struct{}, 0)
 	if ing.Spec.TLS != nil {
@@ -236,7 +236,7 @@ func (r *IngressReconciler) reconcileCloudflareTunnelIngress(ctx context.Context
 									networkingv1apply.IngressBackend().
 										WithService(
 											networkingv1apply.IngressServiceBackend().
-												WithName(r.nginxIngressServiceName).
+												WithName(r.NginxIngressServiceName).
 												WithPort(
 													networkingv1apply.ServiceBackendPort().
 														WithNumber(backendPort),

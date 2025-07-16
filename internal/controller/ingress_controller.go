@@ -31,9 +31,11 @@ import (
 type IngressReconciler struct {
 	client.Client
 	Scheme                           *runtime.Scheme
-	nginxIngressClassName            string
-	nginxIngressServiceName          string
-	cloudflareTunnelIngressClassName string
+	IsDefaultIngressClassEnabled     bool
+	IngressClassName                 string
+	NginxIngressClassName            string
+	NginxIngressServiceName          string
+	CloudflareTunnelIngressClassName string
 }
 
 // +kubebuilder:rbac:groups=networking.k8s.io,resources=ingresses,verbs=get;list;watch;create;update;patch;delete
@@ -62,6 +64,10 @@ func (r *IngressReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 			logger.Error(err, "Failed to get Ingress resource", "name", req.Name, "namespace", req.Namespace)
 			return ctrl.Result{}, err
 		}
+	}
+
+	if !r.IsDefaultIngressClassEnabled && ing.Spec.IngressClassName != nil && *ing.Spec.IngressClassName != r.IngressClassName {
+		return ctrl.Result{}, nil
 	}
 
 	if !ing.DeletionTimestamp.IsZero() {
