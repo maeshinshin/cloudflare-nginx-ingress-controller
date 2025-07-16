@@ -28,7 +28,7 @@ spec:
           - --nginx-ingress-service-name={{ include "integrated-ingress.nginxFullname" . }}-controller
         {{- toYaml .Values.controllerManager.manager.args | nindent 10 }}
         command:
-        - /manager
+        - /ko-app/main.go
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
