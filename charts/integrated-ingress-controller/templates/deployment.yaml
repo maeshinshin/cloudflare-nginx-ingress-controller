@@ -23,8 +23,8 @@ spec:
       - args: 
           - --enable-default-ingress-class={{ .Values.ingressClass.isDefaultClass }}
           - --ingress-class-name={{- default "integrated-ingress" .Values.ingressClass.name }}
-          - --nginx-ingress-class-name={{ .Values.nginxIngress.controller.ingressClassResource.name }}
-          - --cloudflare-tunnel-ingress-class-name={{ .Values.cloudflareTunnel.ingressClass.name }}
+          - --nginx-ingress-class-name={{ .Values.nginxingress.controller.ingressClassResource.name }}
+          - --cloudflare-tunnel-ingress-class-name={{ .Values.cloudflaretunnel.ingressClass.name }}
           - --nginx-ingress-service-name={{ include "integrated-ingress.nginxFullname" . }}-controller
         {{- toYaml .Values.controllerManager.manager.args | nindent 10 }}
         command:

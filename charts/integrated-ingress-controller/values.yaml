@@ -1,8 +1,9 @@
+# nameOverride: ""
+
 ingressClass:
   name: integrated-ingress
   isDefaultClass: false
   controllerValue: maeshinshin.github.io/integrated-ingress
-# nameOverride: ""
 controllerManager:
   manager:
     args:
