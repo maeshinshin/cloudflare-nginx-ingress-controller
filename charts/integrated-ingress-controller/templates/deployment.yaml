@@ -9,13 +9,11 @@ spec:
   replicas: {{ .Values.controllerManager.replicas }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: integrated-ingress-controller
       control-plane: controller-manager
     {{- include "chart.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "chart.name" . }}
         control-plane: controller-manager
       {{- include "chart.selectorLabels" . | nindent 8 }}
       annotations:
