@@ -26,11 +26,7 @@ go.work
 *.swo
 *~
 
-# Direnv
+# environment files
 .direnv
-
-# env
 .env
-
-# Tiltfile
 Tiltfile
