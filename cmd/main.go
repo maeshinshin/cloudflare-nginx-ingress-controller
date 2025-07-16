@@ -55,6 +55,11 @@ func main() {
 	var metricsCertPath, metricsCertName, metricsCertKey string
 	var enableLeaderElection bool
 	var probeAddr string
+	var ingressClassName string
+	var nginxIngressClassName string
+	var nginxIngressServiceName string
+	var cloudflareTunnelIngressClassName string
+	var isDefaultIngressClassEnabled bool
 	var secureMetrics bool
 	var enableHTTP2 bool
 	var tlsOpts []func(*tls.Config)
@@ -72,6 +77,17 @@ func main() {
 	flag.StringVar(&metricsCertKey, "metrics-cert-key", "tls.key", "The name of the metrics server key file.")
 	flag.BoolVar(&enableHTTP2, "enable-http2", false,
 		"If set, HTTP/2 will be enabled for the metrics servers")
+	flag.BoolVar(&isDefaultIngressClassEnabled, "enable-default-ingress-class", false,
+		"If set, the integrated ingress controller will be the default IngressClass.")
+	flag.StringVar(&ingressClassName, "ingress-class-name", "integrated-ingress",
+		"The name of the IngressClass that the integrated ingress controller will use.")
+	flag.StringVar(&nginxIngressClassName, "nginx-ingress-class-name", "nginx",
+		"The name of the IngressClass that the NGINX Ingress controller will use.")
+	flag.StringVar(&cloudflareTunnelIngressClassName, "cloudflare-tunnel-ingress-class-name", "cloudflare-tunnel",
+		"The name of the IngressClass that the Cloudflare Tunnel Ingress controller will use.")
+	flag.StringVar(&nginxIngressServiceName, "nginx-ingress-service-name", "nginx-ingress-controller",
+		"The name of the NGINX Ingress controller service that the integrated ingress controller will use.")
+
 	opts := zap.Options{
 		Development: true,
 	}
@@ -167,8 +183,13 @@ func main() {
 	}
 
 	if err = (&controller.IngressReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:                           mgr.GetClient(),
+		Scheme:                           mgr.GetScheme(),
+		IsDefaultIngressClassEnabled:     isDefaultIngressClassEnabled,
+		IngressClassName:                 ingressClassName,
+		NginxIngressClassName:            nginxIngressClassName,
+		NginxIngressServiceName:          nginxIngressServiceName,
+		CloudflareTunnelIngressClassName: cloudflareTunnelIngressClassName,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Ingress")
 		os.Exit(1)

@@ -22,7 +22,13 @@ spec:
         kubectl.kubernetes.io/default-container: manager
     spec:
       containers:
-      - args: {{- toYaml .Values.controllerManager.manager.args | nindent 8 }}
+      - args: 
+          - --enable-default-ingress-class={{ .Values.ingressClass.isDefaultClass }}
+          - --ingress-class-name={{- default "integrated-ingress" .Values.ingressClass.name }}
+          - --nginx-ingress-class-name={{ .Values.nginxIngress.controller.ingressClassResource.name }}
+          - --cloudflare-tunnel-ingress-class-name={{ .Values.cloudflareTunnel.ingressClass.name }}
+          - --nginx-ingress-service-name={{ include "integrated-ingress.nginxFullname" . }}-controller
+        {{- toYaml .Values.controllerManager.manager.args | nindent 10 }}
         command:
         - /manager
         env:

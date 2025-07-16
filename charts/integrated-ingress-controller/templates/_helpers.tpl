@@ -14,15 +14,12 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
-Create ingressClass name
-}}
-{{- define "chart.ingressClass" -}}
-{{- if .Values.ingressClass.name }}
-{{- .Values.ingressClass.name | quote }}
-{{- else}}
-{{- "integratedIngress" | quote }}
-{{- end }}
-{{- end }}
+Create ingressClass name.
+*/}}
+{{- define "integrated-ingress.ingressClass" -}}
+{{- default "integrated-ingress" .Values.ingressClass.name }}
+{{- end -}}
+
 
 {{/*
 Common labels
@@ -43,4 +40,16 @@ Selector labels
 app.kubernetes.io/name: {{ include "chart.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Create the full name for the NGINX ingress-controller subchart.
+This respects the fullnameOverride set in the nginxingress values.
+*/}}
+{{- define "integrated-ingress.nginxFullname" -}}
+{{- if .Values.nginxIngress.fullnameOverride -}}
+{{- .Values.nginxIngress.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name "ingress-nginx" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
 
