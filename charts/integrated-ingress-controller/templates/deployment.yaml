@@ -26,6 +26,7 @@ spec:
           - --nginx-ingress-class-name={{ .Values.nginxingress.controller.ingressClassResource.name }}
           - --cloudflare-tunnel-ingress-class-name={{ .Values.cloudflaretunnel.ingressClass.name }}
           - --nginx-ingress-service-name={{ include "integrated-ingress.nginxFullname" . }}-controller
+          - --nginx-ingress-service-namespace={{ .Release.Namespace }}
         {{- toYaml .Values.controllerManager.manager.args | nindent 10 }}
         command:
         - /ko-app/main.go

@@ -27,7 +27,7 @@ func (r *IngressReconciler) deleteFinalizers(ctx context.Context, ing *networkin
 }
 
 func (r *IngressReconciler) getNginxIngressServiceDomain() string {
-	return fmt.Sprintf("%s.%s.svc.cluster.local", r.NginxIngressServiceName, r.Namespace)
+	return fmt.Sprintf("%s.%s.svc.cluster.local", r.NginxIngressServiceName, r.NginxIngressServiceNamespace)
 }
 
 func (r *IngressReconciler) controllerReference(ing *networkingv1.Ingress) (*metav1apply.OwnerReferenceApplyConfiguration, error) {

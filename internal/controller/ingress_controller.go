@@ -36,7 +36,7 @@ type IngressReconciler struct {
 	NginxIngressClassName            string
 	NginxIngressServiceName          string
 	CloudflareTunnelIngressClassName string
-	Namespace                        string
+	NginxIngressServiceNamespace     string
 }
 
 // +kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
