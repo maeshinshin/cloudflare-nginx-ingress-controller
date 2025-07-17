@@ -36,8 +36,10 @@ type IngressReconciler struct {
 	NginxIngressClassName            string
 	NginxIngressServiceName          string
 	CloudflareTunnelIngressClassName string
+	Namespace                        string
 }
 
+// +kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=networking.k8s.io,resources=ingresses,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=networking.k8s.io,resources=ingresses/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=networking.k8s.io,resources=ingresses/finalizers,verbs=update
@@ -83,8 +85,14 @@ func (r *IngressReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 
 func (r *IngressReconciler) reconcile(ctx context.Context, ing networkingv1.Ingress) (ctrl.Result, error) {
 	logger := logf.FromContext(ctx)
+
 	if err := r.reconcileIngress(ctx, ing); err != nil {
 		logger.Error(err, "Failed to reconcile Ingress", "name", ing.Name, "namespace", ing.Namespace)
+		return ctrl.Result{}, err
+	}
+
+	if err := r.reconcileExternalNameService(ctx, ing); err != nil {
+		logger.Error(err, "Failed to reconcile ExternalName Service", "name", r.NginxIngressServiceName, "namespace", ing.Namespace)
 		return ctrl.Result{}, err
 	}
 

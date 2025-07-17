@@ -62,6 +62,7 @@ func main() {
 	var isDefaultIngressClassEnabled bool
 	var secureMetrics bool
 	var enableHTTP2 bool
+	var namespace string
 	var tlsOpts []func(*tls.Config)
 	flag.StringVar(&metricsAddr, "metrics-bind-address", "0", "The address the metrics endpoint binds to. "+
 		"Use :8443 for HTTPS or :8080 for HTTP, or leave as 0 to disable the metrics service.")
@@ -87,6 +88,8 @@ func main() {
 		"The name of the IngressClass that the Cloudflare Tunnel Ingress controller will use.")
 	flag.StringVar(&nginxIngressServiceName, "nginx-ingress-service-name", "nginx-ingress-controller",
 		"The name of the NGINX Ingress controller service that the integrated ingress controller will use.")
+	flag.StringVar(&namespace, "nginx-ingress-service-namespace", "ingress-nginx",
+		"The namespace of the NGINX Ingress controller service that the integrated ingress controller will use.")
 
 	opts := zap.Options{
 		Development: true,
@@ -190,6 +193,7 @@ func main() {
 		NginxIngressClassName:            nginxIngressClassName,
 		NginxIngressServiceName:          nginxIngressServiceName,
 		CloudflareTunnelIngressClassName: cloudflareTunnelIngressClassName,
+		Namespace:                        namespace,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Ingress")
 		os.Exit(1)
