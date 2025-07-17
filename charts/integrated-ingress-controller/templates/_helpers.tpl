@@ -46,8 +46,8 @@ Create the full name for the NGINX ingress-controller subchart.
 This respects the fullnameOverride set in the nginxingress values.
 */}}
 {{- define "integrated-ingress.nginxFullname" -}}
-{{- if .Values.nginxIngress.fullnameOverride -}}
-{{- .Values.nginxIngress.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.nginxingress.fullnameOverride -}}
+{{- .Values.nginxingress.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s-%s" .Release.Name "ingress-nginx" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
