@@ -33,8 +33,6 @@ jobs:
 
           yq e '.version = "'$CHART_VERSION'"' -i 'charts/integrated-ingress-controller/Chart.yaml'
           yq e '.appVersion = "'$IMAGE_TAG'"' -i 'charts/integrated-ingress-controller/Chart.yaml'
-          yq e '.controllerManager.manager.image.tag = "'$IMAGE_TAG'"' -i 'charts/integrated-ingress-controller/values.yaml'
-
 
       - name: Configure Git
         run: |
