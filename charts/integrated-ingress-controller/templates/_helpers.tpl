@@ -49,7 +49,7 @@ This respects the fullnameOverride set in the nginxingress values.
 {{- if .Values.nginxingress.fullnameOverride -}}
 {{- .Values.nginxingress.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s" .Release.Name "ingress-nginx" | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name "ingressnginx" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 
