@@ -17,6 +17,7 @@ controllerManager:
           - ALL
     image:
       repository: ghcr.io/maeshinshin/integrated-ingress-controller
+      tag: v0.2.6
     resources:
       limits:
         cpu: 500m
