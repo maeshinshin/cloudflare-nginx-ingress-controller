@@ -1,135 +1,127 @@
-# integrated-ingress-controller
-// TODO(user): Add simple overview of use/purpose
+# Integrated Ingress Controller
 
-## Description
-// TODO(user): An in-depth paragraph about your project and overview of use
+integrated-ingress-controller is a custom Kubernetes controller designed to orchestrate Cloudflare Tunnel and NGINX Ingress Controller to work in harmony.
 
-## Getting Started
+Developers can define a single Ingress resource to automatically configure secure external access via Cloudflare and flexible internal routing and authentication via NGINX.
+
+## 🌟 Features
+
+- Simplified Ingress Management: Developers can expose services without worrying about complex configurations by simply specifying a single IngressClass provided by this controller.
+- Automatic DNS Record Creation: Through integration with Cloudflare Tunnel, DNS records for hostnames defined in the Ingress resource are automatically created and managed on Cloudflare.
+- Flexible Internal Routing & Authentication: It leverages NGINX Ingress Controller internally, allowing you to use its powerful features like path-based routing, Basic Authentication, and rewrite rules.
+
+## 🔗 Dependencies
+
+This controller leverages two powerful, community-maintained Ingress controllers, which are automatically installed as dependencies via Helm:
+
+- [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx): Used for all internal routing, authentication, and traffic management within the Kubernetes cluster.
+- [Cloudflare Tunnel Ingress Controller](https://github.com/STRRL/cloudflare-tunnel-ingress-controller): Used to securely connect your cluster to the Cloudflare network and automatically manage public DNS records.
+
+Our controller acts as an orchestrator layer on top of these two, simplifying their combined usage.
+
+## 🏛️ Architecture
+
+This controller monitors Ingress resources. When it finds a resource with its specific ingressClassName, it automatically generates two distinct Ingress resources, each with a different role.
+
+```
+                       ┌──────────────────────────────┐
+                       │   Ingress created by User    │
+                       │ (class: integrated-ingress)  │
+                       └─────────────┬────────────────┘
+                                     │ 1. Detected by Controller
+                                     ▼
+                  ┌────────────────────────────────────┐
+                  │   Integrated Ingress Controller    │
+                  └────────────────┬───────────────────┘
+                                   │ 2. Generates two Ingresses
+           ┌───────────────────────┴───────────────────────┐
+           ▼                                               ▼
+┌──────────────────────┐                      ┌──────────────────────┐
+│ Ingress for          │                      │ Ingress for          │
+│ Cloudflare Tunnel    │                      │ NGINX                │
+│ (class: cloudflare)  │                      │ (class: nginx)       │
+└──────────┬───────────┘                      └──────────┬───────────┘
+           │                                             │
+           │ Creates DNS & Forwards traffic to NGINX     │ Auth & Routes to App
+           ▼                                             ▼
+┌──────────────────────┐                      ┌──────────────────────┐
+│ Cloudflare Tunnel    │ ───────────────>     │ NGINX Ingress        │
+│ Ingress Controller   │                      │ Controller           │
+└──────────────────────┘                      └──────────────────────┘
+
+
+```
+
+## 🚀 Installation
+
+This controller can be easily installed using Helm.
 
 ### Prerequisites
-- go version v1.23.0+
-- docker version 17.03+.
-- kubectl version v1.11.3+.
-- Access to a Kubernetes v1.11.3+ cluster.
 
-### To Deploy on the cluster
-**Build and push your image to the location specified by `IMG`:**
+- A running Kubernetes cluster
+- The helm command-line tool
 
-```sh
-make docker-build docker-push IMG=<some-registry>/integrated-ingress-controller:tag
+### Installation Steps
+
+#### 1. Add the Helm repository.
+
+```bash
+helm repo add integrated-ingress https://maeshinshin.github.io/integrated-ingress-controller
 ```
 
-**NOTE:** This image ought to be published in the personal registry you specified.
-And it is required to have access to pull the image from the working environment.
-Make sure you have the proper permission to the registry if the above commands don’t work.
+#### 2. Update the repository.
 
-**Install the CRDs into the cluster:**
-
-```sh
-make install
+```bash
+helm repo update
 ```
 
-**Deploy the Manager to the cluster with the image specified by `IMG`:**
+#### 3. Install the Helm chart.
 
-```sh
-make deploy IMG=<some-registry>/integrated-ingress-controller:tag
+This command also installs its dependencies, nginx-ingress-controller and cloudflare-tunnel-ingress-controller.
+Replace the <...> placeholders with your own Cloudflare information.
+
+```bash
+helm upgrade --install --wait \
+  -n integrated-ingress-controller --create-namespace \
+  integrated-ingress \
+  integrated-ingress/integrated-ingress \
+  --set=cloudflaretunnel.cloudflare.apiToken="<cloudflare-api-token>" \
+  --set=cloudflaretunnel.cloudflare.accountId="<cloudflare-account-id>" \
+  --set=cloudflaretunnel.cloudflare.tunnelName="<your-favorite-tunnel-name>"
 ```
 
-> **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin
-privileges or be logged in as admin.
+## Usage
+After installation, you can expose a service by creating an Ingress resource with ingressClassName set to integrated-ingress.
 
-**Create instances of your solution**
-You can apply the samples (examples) from the config/sample:
+### Example Configuration
 
-```sh
-kubectl apply -k config/samples/
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-app-ingress
+  annotations:
+    # Set Basic Authentication for NGINX
+    nginx.ingress.kubernetes.io/auth-type: "basic"
+    nginx.ingress.kubernetes.io/auth-secret: "my-basic-auth-secret"
+spec:
+  # Specify the IngressClass handled by this controller
+  ingressClassName: integrated-ingress
+  rules:
+    - host: my-app.your-domain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-app-service
+                port:
+                  number: 80
 ```
 
->**NOTE**: Ensure that the samples has default values to test it out.
-
-### To Uninstall
-**Delete the instances (CRs) from the cluster:**
-
-```sh
-kubectl delete -k config/samples/
-```
-
-**Delete the APIs(CRDs) from the cluster:**
-
-```sh
-make uninstall
-```
-
-**UnDeploy the controller from the cluster:**
-
-```sh
-make undeploy
-```
-
-## Project Distribution
-
-Following the options to release and provide this solution to the users.
-
-### By providing a bundle with all YAML files
-
-1. Build the installer for the image built and published in the registry:
-
-```sh
-make build-installer IMG=<some-registry>/integrated-ingress-controller:tag
-```
-
-**NOTE:** The makefile target mentioned above generates an 'install.yaml'
-file in the dist directory. This file contains all the resources built
-with Kustomize, which are necessary to install this project without its
-dependencies.
-
-2. Using the installer
-
-Users can just run 'kubectl apply -f <URL for YAML BUNDLE>' to install
-the project, i.e.:
-
-```sh
-kubectl apply -f https://raw.githubusercontent.com/<org>/integrated-ingress-controller/<tag or branch>/dist/install.yaml
-```
-
-### By providing a Helm Chart
-
-1. Build the chart using the optional helm plugin
-
-```sh
-kubebuilder edit --plugins=helm/v1-alpha
-```
-
-2. See that a chart was generated under 'dist/chart', and users
-can obtain this solution from there.
-
-**NOTE:** If you change the project, you need to update the Helm Chart
-using the same command above to sync the latest changes. Furthermore,
-if you create webhooks, you need to use the above command with
-the '--force' flag and manually ensure that any custom configuration
-previously added to 'dist/chart/values.yaml' or 'dist/chart/manager/manager.yaml'
-is manually re-applied afterwards.
-
-## Contributing
-// TODO(user): Add detailed information on how you would like others to contribute to this project
-
-**NOTE:** Run `make help` for more information on all potential `make` targets
-
-More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
+When you apply this manifest, the controller will automatically generate the necessary configurations for both Cloudflare and NGINX.
 
 ## License
 
-Copyright 2025.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
+This project is licensed under the Apache License 2.0.
